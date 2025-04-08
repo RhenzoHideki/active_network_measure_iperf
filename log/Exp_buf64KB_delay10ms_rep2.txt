@@ -1,1 +1,0 @@
-sudo: himage: comando não encontrado

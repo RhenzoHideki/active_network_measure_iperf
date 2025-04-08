@@ -233,4 +233,5 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+./resultados_iperf/
 # End of https://www.toptal.com/developers/gitignore/api/linux,python,windows,visualstudiocode

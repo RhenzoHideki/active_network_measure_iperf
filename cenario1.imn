@@ -1,0 +1,236 @@
+node n0 {
+    type pc
+    network-config {
+	hostname pc1
+	!
+	interface eth0
+	 ip address 10.0.0.20/24
+	 ipv6 address fc00::20/64
+	 mac address 42:00:aa:00:00:00
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+    }
+    auto_default_routes enabled
+    canvas c0
+    iconcoords {48 48}
+    labelcoords {48 79}
+    interface-peer {eth0 n4}
+}
+
+node n1 {
+    type pc
+    network-config {
+	hostname pc2
+	!
+	interface eth0
+	 ip address 10.0.1.20/24
+	 ipv6 address fc00:1::20/64
+	 mac address 42:00:aa:00:00:02
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+    }
+    auto_default_routes enabled
+    canvas c0
+    iconcoords {72 576}
+    labelcoords {72 607}
+    interface-peer {eth0 n4}
+}
+
+node n2 {
+    type pc
+    network-config {
+	hostname pc3
+	!
+	interface eth0
+	 ip address 10.0.3.20/24
+	 ipv6 address fc00:3::20/64
+	 mac address 42:00:aa:00:00:07
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+    }
+    auto_default_routes enabled
+    canvas c0
+    iconcoords {864 48}
+    labelcoords {864 79}
+    interface-peer {eth0 n5}
+}
+
+node n3 {
+    type pc
+    network-config {
+	hostname pc4
+	!
+	interface eth0
+	 ip address 10.0.4.20/24
+	 ipv6 address fc00:4::20/64
+	 mac address 42:00:aa:00:00:09
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+    }
+    auto_default_routes enabled
+    canvas c0
+    iconcoords {840 576}
+    labelcoords {840 607}
+    interface-peer {eth0 n5}
+}
+
+node n4 {
+    type router
+    model frr
+    network-config {
+	hostname router1
+	!
+	interface eth2
+	 ip address 10.0.2.1/24
+	 ipv6 address fc00:2::1/64
+	 mac address 42:00:aa:00:00:04
+	!
+	interface eth1
+	 ip address 10.0.1.1/24
+	 ipv6 address fc00:1::1/64
+	 mac address 42:00:aa:00:00:03
+	!
+	interface eth0
+	 ip address 10.0.0.1/24
+	 ipv6 address fc00::1/64
+	 mac address 42:00:aa:00:00:01
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+	router rip
+	 redistribute static
+	 redistribute connected
+	 redistribute ospf
+	 network 0.0.0.0/0
+	!
+	router ripng
+	 redistribute static
+	 redistribute connected
+	 redistribute ospf6
+	 network ::/0
+	!
+    }
+    auto_default_routes enabled
+    canvas c0
+    iconcoords {288 312}
+    labelcoords {288 337}
+    interface-peer {eth0 n0}
+    interface-peer {eth1 n1}
+    interface-peer {eth2 n5}
+}
+
+node n5 {
+    type router
+    model frr
+    network-config {
+	hostname router2
+	!
+	interface eth2
+	 ip address 10.0.4.1/24
+	 ipv6 address fc00:4::1/64
+	 mac address 42:00:aa:00:00:08
+	!
+	interface eth1
+	 ip address 10.0.3.1/24
+	 ipv6 address fc00:3::1/64
+	 mac address 42:00:aa:00:00:06
+	!
+	interface eth0
+	 ip address 10.0.2.2/24
+	 ipv6 address fc00:2::2/64
+	 mac address 42:00:aa:00:00:05
+	!
+	interface lo0
+	 type lo
+	 ip address 127.0.0.1/8
+	 ipv6 address ::1/128
+	!
+	router rip
+	 redistribute static
+	 redistribute connected
+	 redistribute ospf
+	 network 0.0.0.0/0
+	!
+	router ripng
+	 redistribute static
+	 redistribute connected
+	 redistribute ospf6
+	 network ::/0
+	!
+    }
+    auto_default_routes enabled
+    canvas c0
+    iconcoords {624 312}
+    labelcoords {624 337}
+    interface-peer {eth0 n4}
+    interface-peer {eth1 n2}
+    interface-peer {eth2 n3}
+}
+
+link l0 {
+    bandwidth 100000000
+    nodes {n0 n4}
+    ifaces {eth0 eth0}
+}
+
+link l1 {
+    bandwidth 100000000
+    nodes {n1 n4}
+    ifaces {eth0 eth1}
+}
+
+link l2 {
+    bandwidth 100000000
+    nodes {n4 n5}
+    ifaces {eth2 eth0}
+}
+
+link l3 {
+    bandwidth 100000000
+    nodes {n5 n2}
+    ifaces {eth1 eth0}
+}
+
+link l4 {
+    bandwidth 100000000
+    nodes {n5 n3}
+    ifaces {eth2 eth0}
+}
+
+canvas c0 {
+    name {Canvas0}
+}
+
+option show {
+    interface_names yes
+    ip_addresses yes
+    ipv6_addresses no
+    node_labels yes
+    link_labels yes
+    background_images no
+    annotations yes
+    hostsAutoAssign no
+    grid yes
+    iconSize normal
+    zoom 1.0
+}
+
