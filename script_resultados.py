@@ -75,7 +75,7 @@ for i, bar in enumerate(bars):
 plt.tight_layout()
 
 # Salvar o gráfico
-plt.savefig('grafico_vazao.png', dpi=300)
+plt.savefig('grafico_vazao_1.png', dpi=300)
 
 # Mostrar o gráfico
 plt.show()
