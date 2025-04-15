@@ -16,7 +16,7 @@
 
   A medição ativa em redes é uma técnica fundamental para a avaliação do desempenho dos sistemas de comunicação. Este relatório apresenta a análise de desempenho de uma conexão TCP utilizando a ferramenta `iperf`, onde foram mensuradas as vazões sob diferentes configurações. A principal finalidade é entender como o tamanho do buffer de envio e os atrasos na rede (RTT) influenciam a vazão efetiva obtida na transferência de dados.
 
-
+#pagebreak()
   = Descrição do Cenário
   Cenário escolhido foi o cenário 1, neste cenário será avaliada a vazão média de uma conexão TCP utilizando medições ativas com `iperf`, a fim de determinar os efeitos dos seguintes fatores:
 
@@ -161,91 +161,54 @@ finally:
 === Configurações Iniciais
 Variáveis de Configuração:
 São definidas as configurações essenciais para o experimento:
-
-topologia: Arquivo que contém a definição do cenário de rede (cenario1.imn).
-
-buffer_sizes e delays: Listas definem os valores de buffer (64K e 208K) e os valores de delay (10 ms e 100 ms) que serão testados.
-
-repeticoes: Número de vezes que cada combinação será executada (8 repetições).
-
-Nomes dos nós e IP: São configurados os nós cliente (pc2) e servidor (pc4), além do IP do servidor e do enlace utilizado para configuração do delay.
-
-Diretório de Saída: Cria-se o diretório resultados_iperf para armazenar os arquivos com os resultados dos testes.
+\ topologia: Arquivo que contém a definição do cenário de rede (cenario1.imn).
+\ buffer_sizes e delays: Listas definem os valores de buffer (64K e 208K) e os valores de delay (10 ms e 100 ms) que serão testados.
+\ repeticoes: Número de vezes que cada combinação será executada (8 repetições).
+\ Nomes dos nós e IP: São configurados os nós cliente (pc2) e servidor (pc4), além do IP do servidor e do enlace utilizado para configuração do delay.
+\ Diretório de Saída: Cria-se o diretório resultados_iperf para armazenar os arquivos com os resultados dos testes.
 
 === Funções Auxiliares
-iniciar_imunes(topologia):
+ iniciar_imunes(topologia):
 
-Executa o comando para iniciar o IMUNES com a topologia definida.
-
-Utiliza o subprocess.run para chamar o programa com privilégios de superusuário.
-
-Extrai o ID do cenário (eid) da saída do comando usando uma expressão regular.
-
-Aguarda 2 segundos para que o cenário seja estabilizado antes de seguir com os testes.
-
-configurar_delay(delay, enlace, cenario_id):
-
-Converte o valor do delay de milissegundos para microssegundos, que é a unidade esperada pelo comando.
-
-Aplica o delay configurado ao enlace especificado, utilizando o comando vlink.
-
-iniciar_servidor_iperf(pc_servidor, cenario_id):
-
-Inicia o servidor iperf no nó servidor, usando subprocess.Popen para rodar o processo em segundo plano.
-
-Redireciona a saída e os erros para DEVNULL para evitar poluição no terminal.
-
-parar_servidor_iperf(pc_servidor, cenario_id, processo):
-
-Termina o processo do servidor iperf iniciado anteriormente.
-
-Utiliza o comando pkill para assegurar que quaisquer instâncias residuais do iperf sejam finalizadas no nó servidor.
-
-executar_teste(buffer, delay, repeticao, cenario_id):
-
-Define o nome e o caminho do arquivo de saída com base no buffer, delay e número da repetição.
-
-Inicia o servidor iperf e aguarda 1 segundo para que este se estabilize.
-
-Executa o cliente iperf no nó cliente, realizando uma transferência de 100M com os parâmetros especificados, e grava a saída no arquivo definido.
-
-Finaliza o servidor iperf após a realização do teste e aguarda mais 1 segundo antes de continuar.
-
-finalizar_imunes(cenario_id):
-
-Finaliza o cenário IMUNES chamando o comando apropriado para encerrar o ambiente simulado, liberando os recursos utilizados.
+- Executa o comando para iniciar o IMUNES com a topologia definida.
+- Utiliza o subprocess.run para chamar o programa com privilégios de superusuário.
+- Extrai o ID do cenário (eid) da saída do comando usando uma expressão regular.
+- Aguarda 2 segundos para que o cenário seja estabilizado antes de seguir com os testes.
+\ configurar_delay(delay, enlace, cenario_id):
+- Converte o valor do delay de milissegundos para microssegundos, que é a unidade esperada pelo comando.
+- Aplica o delay configurado ao enlace especificado, utilizando o comando vlink.
+\ iniciar_servidor_iperf(pc_servidor, cenario_id):
+- Inicia o servidor iperf no nó servidor, usando subprocess.Popen para rodar o processo em segundo plano.
+- Redireciona a saída e os erros para DEVNULL para evitar poluição no terminal.
+\ parar_servidor_iperf(pc_servidor, cenario_id, processo):
+- Termina o processo do servidor iperf iniciado anteriormente.
+- Utiliza o comando pkill para assegurar que quaisquer instâncias residuais do iperf sejam finalizadas no nó servidor.
+\ executar_teste(buffer, delay, repeticao, cenario_id):
+- Define o nome e o caminho do arquivo de saída com base no buffer, delay e número da repetição.
+- Inicia o servidor iperf e aguarda 1 segundo para que este se estabilize.
+- Executa o cliente iperf no nó cliente, realizando uma transferência de 100M com os parâmetros especificados, e grava a saída no arquivo definido.
+- Finaliza o servidor iperf após a realização do teste e aguarda mais 1 segundo antes de continuar.
+\ finalizar_imunes(cenario_id):
+- Finaliza o cenário IMUNES chamando o comando apropriado para encerrar o ambiente simulado, liberando os recursos utilizados.
 
 === Funções para Análise dos Resultados
-parse_iperf_output(file_path):
-
-Lê o conteúdo do arquivo de saída gerado pelo iperf.
-
-Percorre as linhas em ordem reversa para encontrar a linha relevante (não comentada).
-
-Divide a linha em partes usando a vírgula como separador e retorna o valor de vazão presente na 9ª posição (índice 8).
-
-Caso ocorra algum erro, exibe uma mensagem e retorna None.
-
-calcular_intervalo_confianca(dados):
-
-Calcula a média dos dados de vazão e o erro padrão (SEM) utilizando a biblioteca numpy e scipy.stats.
-
-Se houver pelo menos 2 amostras, utiliza a distribuição t-student para calcular o intervalo de confiança de 95%.
-
-Retorna uma tupla com os limites inferior e superior do intervalo; se não houver dados suficientes, retorna a média para ambos os limites.
-
+\ parse_iperf_output(file_path):
+- Lê o conteúdo do arquivo de saída gerado pelo iperf.
+- Percorre as linhas em ordem reversa para encontrar a linha relevante (não comentada).
+- Divide a linha em partes usando a vírgula como separador e retorna o valor de vazão presente na 9ª posição (índice 8).
+- Caso ocorra algum erro, exibe uma mensagem e retorna None.
+\ calcular_intervalo_confianca(dados):
+- Calcula a média dos dados de vazão e o erro padrão (SEM) utilizando a biblioteca numpy e scipy.stats.
+- Se houver pelo menos 2 amostras, utiliza a distribuição t-student para calcular o intervalo de confiança de 95%.
+- Retorna uma tupla com os limites inferior e superior do intervalo; se não houver dados suficientes, retorna a média para ambos os limites.
 === Execução Principal
-O bloco principal do script gerencia o fluxo de execução:
+\ O bloco principal do script gerencia o fluxo de execução:
+- Inicializa o cenário chamando a função iniciar_imunes().
+- Para cada combinação de tamanho de buffer e delay, configura o atraso e executa os testes conforme o número de repetições definido.
+ -Em caso de erro, o script captura e exibe a mensagem correspondente.
+- No final, se o cenário foi iniciado, ele é finalizado de forma apropriada, garantindo que todos os recursos sejam liberados.
 
-Inicializa o cenário chamando a função iniciar_imunes().
-
-Para cada combinação de tamanho de buffer e delay, configura o atraso e executa os testes conforme o número de repetições definido.
-
-Em caso de erro, o script captura e exibe a mensagem correspondente.
-
-No final, se o cenário foi iniciado, ele é finalizado de forma apropriada, garantindo que todos os recursos sejam liberados.
-
-  == Tabela de resultados
+== Tabela de resultados
   #let resultados = csv("resultados_consolidados.csv")
 
   #align(
