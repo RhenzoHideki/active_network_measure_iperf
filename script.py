@@ -12,7 +12,7 @@ repeticoes = 8
 pc_cliente = "pc2"
 pc_servidor = "pc4"
 ip_servidor = "10.0.4.20"
-enlace = "router2:pc2"
+enlace = "router1:pc2"
 
 saida_dir = "resultados_iperf"
 os.makedirs(saida_dir, exist_ok=True)
