@@ -5,7 +5,6 @@
     #show: doc => report(
       title: "Medição Ativa em Redes com o Iperf",
       subtitle: "Avaliação de desempenho de sistemas (ASD029009)",
-      // Se apenas um autor colocar , no final para indicar que é um array
       authors:("Matheus Pires Salazar,Rhenzo Hideki Silva Kajikawa",),
       date: "8 de abril de 2025",
       doc,
@@ -18,7 +17,7 @@
 
 #pagebreak()
   = Descrição do Cenário
-  Cenário escolhido foi o cenário 1, neste cenário será avaliada a vazão média de uma conexão TCP utilizando medições ativas com `iperf`, a fim de determinar os efeitos dos seguintes fatores:
+  Cenário escolhido foi o cenário 1, onde será avaliada a vazão média de uma conexão TCP utilizando medições ativas com `iperf`, a fim de determinar os efeitos dos seguintes fatores:
 
 
 
@@ -39,7 +38,7 @@
   == Script
   A medição foi automatizada por meio de um script Python que inicia o cenário no emulador de rede (IMUNES), configura os parâmetros desejados (delay e buffer) e executa o `iperf` nas configurações especificadas. O script coleta os resultados em arquivos de saída (`.txt`) e os consolida em um arquivo CSV, que contém as colunas: *buffer, delay, repetição* e *throughput_mbps*. Posteriormente, um outro script processa esse CSV para calcular as médias e os intervalos de confiança e gerar um gráfico de barras.
   ```py
-  import subprocess
+import subprocess
 import time
 import os
 import re
@@ -170,7 +169,7 @@ São definidas as configurações essenciais para o experimento:
 === Funções Auxiliares
  iniciar_imunes(topologia):
 
-- Executa o comando para iniciar o IMUNES com a topologia definida.
+- Executa o comando para iniciar o IMUNES com a topologia definida. 
 - Utiliza o subprocess.run para chamar o programa com privilégios de superusuário.
 - Extrai o ID do cenário (eid) da saída do comando usando uma expressão regular.
 - Aguarda 2 segundos para que o cenário seja estabilizado antes de seguir com os testes.
@@ -205,7 +204,7 @@ São definidas as configurações essenciais para o experimento:
 \ O bloco principal do script gerencia o fluxo de execução:
 - Inicializa o cenário chamando a função iniciar_imunes().
 - Para cada combinação de tamanho de buffer e delay, configura o atraso e executa os testes conforme o número de repetições definido.
- -Em caso de erro, o script captura e exibe a mensagem correspondente.
+- Em caso de erro, o script captura e exibe a mensagem correspondente.
 - No final, se o cenário foi iniciado, ele é finalizado de forma apropriada, garantindo que todos os recursos sejam liberados.
 
 == Tabela de resultados
@@ -219,13 +218,13 @@ São definidas as configurações essenciais para o experimento:
     center
   )
 
-  Observa-se que os testes com buffer de 208K e atraso de 10 ms resultaram em vazões aproximadamente entre 92 e 93 Mbps, enquanto as configurações com atraso de 100 ms apresentaram vazões inferiores, próximas a 34–49 Mbps. Os dados consolidados foram posteriormente utilizados para gerar os gráficos.
+  Observa-se que os testes com buffer de 208K e atraso de 10 ms resultaram em vazões aproximadamente entre 92 e 94 Mbps, enquanto as configurações com atraso de 100 ms apresentaram vazões inferiores, próximas a 46–49 Mbps. Os dados consolidados foram posteriormente utilizados para gerar os gráficos.
 
   == Gráfico de Barras ( vazões e intevalos dde confiança )
 O gráfico a seguir ilustra a média das vazões obtidas para cada combinação de buffer e atraso, com barras de erro representando o intervalo de confiança de 95%. Os grupos no eixo X são organizados pelo tamanho do buffer e, dentro de cada grupo, os diferentes atrasos são diferenciados por cores.
 
   #figure(
-  image("./grafico_vazao.png",width:100%),
+  image("./grafico_vazao_1.png",width:100%),
   caption: [
     Grafico gerado pelos resultados.
 
